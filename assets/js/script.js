@@ -1,3 +1,10 @@
+var saveBtnEl = document.getElementsByClassName('time-clack.description');
+let test = document.getElementsByClassName("description");
+var inputTime;
+var inputTask ;
+var arr = [];
+
+
 $(document).ready(function () {
 
     function hourTracker() {
@@ -27,4 +34,27 @@ $(document).ready(function () {
         })
     }
     hourTracker();
-})
+});
+
+
+
+$(document).on("click", ".saveBtn", getFunction);
+
+function getFunction(event) {
+
+var inputTask= document.getElementById(event.target.attributes.time.value);
+
+localStorage.setItem(event.target.attributes.time.value, inputTask.value);
+    
+   
+} 
+
+
+
+function loadSaveData() {
+    if (localStorage.getItem(input) !== null) {
+        savedData = JSON.parse(localStorage.getItem(input));
+    }
+};
+
+//loadSaveData();
