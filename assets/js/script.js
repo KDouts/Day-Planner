@@ -1,60 +1,34 @@
-var saveBtnEl = document.getElementsByClassName('time-clack.description');
-let test = document.getElementsByClassName("description");
-var inputTime;
-var inputTask ;
-var arr = [];
+$(init);
 
+function init() {
+  $("#currentDay").text(moment().format("dddd, MMMM Do"));
 
-$(document).ready(function () {
+  colorTimeBlocks();
+  setInterval(colorTimeBlocks, 60000);
 
-    function hourTracker() {
+  $(".time-block").each(function() {
+    var blockId = $(this).attr("id");
+    $("#" + blockId + " textarea").text(localStorage.getItem(moment().format("DDDYYYY") + blockId));
+  });
+  $(".saveBtn").on("click", handleSave);
+}
 
-        var currentHour = moment().hour();
-
-
-        $(".time-block").each(function () {
-            var blockHour = parseInt($(this).attr("id").split("hour")[1]);
-            console.log( blockHour, currentHour)
-
-            if (blockHour < currentHour) {
-                $(this).addClass("past");
-                $(this).removeClass("future");
-                $(this).removeClass("present");
-            }
-            else if (blockHour === currentHour) {
-                $(this).removeClass("past");
-                $(this).addClass("present");
-                $(this).removeClass("future");
-            }
-            else {
-                $(this).removeClass("present");
-                $(this).removeClass("past");
-                $(this).addClass("future");
-            }
-        })
+function colorTimeBlocks() {
+  $(".time-block").each(function() {
+    var blockHour = parseInt($(this).attr("id").replace("hour-", ""));
+    var currentHour = parseInt(moment().format("H"));
+    $(this).removeClass("past present future");
+    if (blockHour < currentHour) {
+      $(this).addClass("past");
+    } else if (blockHour > currentHour) {
+      $(this).addClass("future");
+    } else {
+      $(this).addClass("present");
     }
-    hourTracker();
-});
+  });
+}
 
-
-
-$(document).on("click", ".saveBtn", getFunction);
-
-function getFunction(event) {
-
-var inputTask= document.getElementById(event.target.attributes.time.value);
-
-localStorage.setItem(event.target.attributes.time.value, inputTask.value);
-    
-   
-} 
-
-
-
-function loadSaveData() {
-    if (localStorage.getItem(input) !== null) {
-        savedData = JSON.parse(localStorage.getItem(input));
-    }
-};
-
-//loadSaveData();
+function handleSave(event) {
+  var hourId = $(this).parent().attr("id");
+  localStorage.setItem(moment().format("DDDYYYY") + hourId, $("#" + hourId + " textarea").val());
+}
